@@ -28,7 +28,7 @@ public class NameFinderFunction extends RichMapFunction<Annotation,Annotation> {
     @Override
     public Annotation map(Annotation annotation) throws Exception {
 
-
+        nameFinder.clearAdaptiveData();
         for (int i = 0; i < annotation.getTokens().length; i++) {
 
             List<String> personMentions = new ArrayList<>();
@@ -40,7 +40,7 @@ public class NameFinderFunction extends RichMapFunction<Annotation,Annotation> {
             String[] names = Span.spansToStrings(nameSpans, tokens);
 
             for (int j = 0; j < nameSpans.length; j++) {
-                if ("person".equals(nameSpans[j])) {
+                if (nameSpans[j].getType().equals("person")) {
                     personMentions.add(names[j]);
                 }
                 else if (nameSpans[j].getType().startsWith("org")) {
@@ -56,10 +56,10 @@ public class NameFinderFunction extends RichMapFunction<Annotation,Annotation> {
                 personMentions.toArray(new String[personMentions.size()]);
 
             annotation.getOrganizationMention()[i] =
-                organizationMentions.toArray(new String[personMentions.size()]);
+                organizationMentions.toArray(new String[organizationMentions.size()]);
 
             annotation.getLocationMention()[i] =
-                locationMentions.toArray(new String[personMentions.size()]);
+                locationMentions.toArray(new String[locationMentions.size()]);
         }
 
         return annotation;
